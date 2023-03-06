@@ -1,4 +1,10 @@
 window.addEventListener('load', () => {
+  let location = document.querySelector('.location');
+  let temperatureSection = document.querySelector('.temperature');
+  let temperatureUnitSection = document.querySelector('.unit');
+  let iconInput = document.querySelector('.temp-icon');
+  let shortCast = document.querySelector('.forecast');
+  let timeName = document.querySelector('.name');
   //get users location
   navigator.geolocation.getCurrentPosition(position => {
     const lat = position.coords.latitude;
@@ -15,6 +21,9 @@ window.addEventListener('load', () => {
           //   console.log(data.properties);
           const forecastAPI = data.properties.forecast;
 
+          const { city, state } = data.properties.relativeLocation.properties;
+          location.textContent = `${city}, ${state}`;
+
           //fetch forecast
           fetch(forecastAPI)
             .then(forecastRes => {
@@ -23,7 +32,22 @@ window.addEventListener('load', () => {
             .then(forecastData => {
               // console.log(forecastData);
               const today = forecastData.properties.periods[0];
-              console.log(today);
+              const {
+                temperature,
+                temperatureUnit,
+                name,
+                shortForecast,
+                icon,
+              } = forecastData.properties.periods[0];
+
+              temperatureSection.textContent = temperature;
+              temperatureUnitSection.textContent = temperatureUnit;
+
+              iconInput.src = icon;
+
+              shortCast.textContent = shortForecast;
+
+              timeName.textContent = name;
             });
         });
     };
